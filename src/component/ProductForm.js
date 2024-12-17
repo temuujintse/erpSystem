@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-const ProductForm = ({ isEditing, productData }) => {
-    const [name, setName] = useState(isEditing ? productData.name : '');
-    const [price, setPrice] = useState(isEditing ? productData.price : '');
+const ProductForm = ({ isEditing, productData, onProductAdded }) => {
+    const [name, setName] = useState(isEditing ? productData?.name : '');
+    const [price, setPrice] = useState(isEditing ? productData?.price : '');
+    const navigate = useNavigate(); // React Router's navigate function
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -11,11 +13,18 @@ const ProductForm = ({ isEditing, productData }) => {
 
         if (isEditing) {
             axios.put(`/api/products/${productData.id}`, product)
-                .then(() => alert('Бараа амжилттай засагдлаа!'))
+                .then(() => {
+                    alert('Бараа амжилттай засагдлаа!');
+                    if (onProductAdded) onProductAdded();
+                })
                 .catch(error => console.error(error));
         } else {
-            axios.post('/api/products', product)
-                .then(() => alert('Шинэ бараа амжилттай нэмэгдлээ!'))
+            axios.post('http://localhost:5000/api/products', product)
+                .then(() => {
+                    alert('Шинэ бараа амжилттай нэмэгдлээ!');
+                    if (onProductAdded) onProductAdded();
+                    navigate('/'); // Redirect to home after success
+                })
                 .catch(error => console.error(error));
         }
     };
