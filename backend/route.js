@@ -12,11 +12,13 @@ const tseControllers = require("./tse/tseController.js");
 
 
 // tse
-//router.get("/:id", tseControllers.getProduct)
-//router.put("/:id", tseControllers.updateProduct)
+router.get("/:id", tseControllers.getProduct)
+router.put("/:id", tseControllers.updateProduct)
 //otgonoo
 router.get("/", otgonbaatarControllers.getProductList)
 router.post("/", otgonbaatarControllers.addProduct)
-//router.delete("/:id", otgonbaatarControllers.deleteProduct)
+// Ensure this is defined in route.js
+router.delete("/:id", otgonbaatarControllers.deleteProduct);
+
 
 module.exports = router;

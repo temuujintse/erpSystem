@@ -1,61 +1,67 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams, useNavigate } from 'react-router-dom'; // To access the product ID and navigate
+import { useParams, useNavigate } from 'react-router-dom';
 
 const ProductDetail = () => {
-    const { id } = useParams(); // Get product ID from the URL
+    const { id } = useParams(); // Get product ID from URL
     const [product, setProduct] = useState(null);
-    const [isEditing, setIsEditing] = useState(false); // Track if the user is editing the product
+    const [isEditing, setIsEditing] = useState(false);
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
-    const navigate = useNavigate(); // To navigate after delete
+    const navigate = useNavigate();
 
     // Fetch product details
-    const fetchProductDetail = () => {
-        axios
-            .get(`http://localhost:5000/api/products/${id}`)
-            .then((response) => {
-                setProduct(response.data);
-                setName(response.data.name);
-                setPrice(response.data.price);
-            })
-            .catch((error) => console.error(error));
-    };
-
     useEffect(() => {
+        const fetchProductDetail = async () => {
+            try {
+                const response = await axios.get(`http://localhost:5000/api/products/${id}`);
+                const productData = response.data;
+                setProduct(productData);
+                setName(productData.name);
+                setPrice(productData.price);
+            } catch (error) {
+                console.error("Error fetching product:", error);
+            }
+        };
+
         fetchProductDetail();
     }, [id]);
 
-    // Handle the edit button click
+    // Handle edit button click
     const handleEditClick = () => {
-        setIsEditing(true); // Switch to editing mode
+        setIsEditing(true); // Enable editing mode
     };
 
-    // Handle the update product form submission
-    const handleUpdate = (e) => {
+    // Handle update form submission
+    const handleUpdate = async (e) => {
         e.preventDefault();
-        const updatedProduct = { name, price };
-
-        axios
-            .put(`http://localhost:5000/api/products/${id}`, updatedProduct)
-            .then(() => {
-                alert('Бараа амжилттай засагдлаа!');
-                setIsEditing(false); // Exit editing mode after successful update
-                fetchProductDetail(); // Refresh product details
-            })
-            .catch((error) => console.error(error));
+        try {
+            const updatedProduct = { name, price };
+            await axios.put(`http://localhost:5000/api/products/${id}`, updatedProduct);
+            alert('Бараа амжилттай засагдлаа!');
+            setIsEditing(false); // Exit editing mode
+            setProduct({ ...product, ...updatedProduct }); // Update local product state
+        } catch (error) {
+            console.error("Error updating product:", error);
+        }
     };
 
-    // Handle product deletion
-    const handleDelete = () => {
-        axios
-            .delete(`http://localhost:5000/api/products/${id}`)
-            .then(() => {
-                alert('Бараа амжилттай устгагдлаа!');
-                navigate('/'); // Redirect to the homepage after successful deletion
-            })
-            .catch((error) => console.error(error));
+    const handleDelete = async () => {
+        try {
+            console.log('Sending DELETE request for ID:', id);
+    
+            const response = await axios.delete(`http://localhost:5000/api/products/${id}`);
+            console.log('DELETE response:', response.data);
+    
+            alert('Бараа амжилттай устгагдлаа!');
+            navigate('/');
+        } catch (error) {
+            console.error('Error deleting product:', error.response?.data || error.message);
+            alert('Устгах явцад алдаа гарлаа.');
+        }
     };
+    
+    
 
     return (
         <div>
@@ -86,6 +92,9 @@ const ProductDetail = () => {
                                 />
                             </label>
                             <button type="submit">Засах</button>
+                            <button type="button" onClick={() => setIsEditing(false)}>
+                                Болих
+                            </button>
                         </form>
                     ) : (
                         <div>
