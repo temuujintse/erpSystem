@@ -4,6 +4,8 @@ import Navbar from './component/navbar';
 import ProductList from './component/ProductList';
 import ProductForm from './component/ProductForm';
 import ProductDetail from './component/ProductDetail';
+import Header from './layout/Header';
+import Footer from './layout/Footer';
 
 
 
@@ -11,13 +13,18 @@ import ProductDetail from './component/ProductDetail';
 const App = () => {
     return (
         <Router>
-                <Navbar />
+        <div className="flex flex-col min-h-screen">
+            <Header />
+            <main className="flex-grow">
                 <Routes>
                     <Route path="/" element={<ProductList />} />
                     <Route path="/add-product" element={<ProductForm isEditing={false} />} />
                     <Route path="/product/:id" element={<ProductDetail />} />
                 </Routes>
-        </Router>
+            </main>
+            <Footer />
+        </div>
+    </Router>
     );
 };
 

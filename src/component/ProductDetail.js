@@ -3,14 +3,13 @@ import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 
 const ProductDetail = () => {
-    const { id } = useParams(); // Get product ID from URL
+    const { id } = useParams();
     const [product, setProduct] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
     const navigate = useNavigate();
 
-    // Fetch product details
     useEffect(() => {
         const fetchProductDetail = async () => {
             try {
@@ -27,20 +26,16 @@ const ProductDetail = () => {
         fetchProductDetail();
     }, [id]);
 
-    // Handle edit button click
-    const handleEditClick = () => {
-        setIsEditing(true); // Enable editing mode
-    };
+    const handleEditClick = () => setIsEditing(true);
 
-    // Handle update form submission
     const handleUpdate = async (e) => {
         e.preventDefault();
         try {
             const updatedProduct = { name, price };
             await axios.put(`http://localhost:5000/api/products/${id}`, updatedProduct);
             alert('Бараа амжилттай засагдлаа!');
-            setIsEditing(false); // Exit editing mode
-            setProduct({ ...product, ...updatedProduct }); // Update local product state
+            setIsEditing(false);
+            setProduct({ ...product, ...updatedProduct });
         } catch (error) {
             console.error("Error updating product:", error);
         }
@@ -48,11 +43,7 @@ const ProductDetail = () => {
 
     const handleDelete = async () => {
         try {
-            console.log('Sending DELETE request for ID:', id);
-    
-            const response = await axios.delete(`http://localhost:5000/api/products/${id}`);
-            console.log('DELETE response:', response.data);
-    
+            await axios.delete(`http://localhost:5000/api/products/${id}`);
             alert('Бараа амжилттай устгагдлаа!');
             navigate('/');
         } catch (error) {
@@ -60,51 +51,76 @@ const ProductDetail = () => {
             alert('Устгах явцад алдаа гарлаа.');
         }
     };
-    
-    
 
     return (
-        <div>
+        <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md">
             {product ? (
-                <div>
-                    <h1>{product.name}</h1>
-                    <p>Price: {product.price}₮</p>
-                    <p>Created At: {new Date(product.createdAt).toLocaleDateString()}</p>
+                <>
+                    <h1 className="text-2xl font-bold mb-4">{product.name}</h1>
+                    <p className="text-gray-700 mb-4">
+                        <span className="font-medium">Үнэ:</span> {product.price}₮
+                    </p>
+                    <p className="text-gray-500 mb-6">
+                        <span className="font-medium">Үүсгэсэн огноо:</span> {new Date(product.createdAt).toLocaleDateString()}
+                    </p>
 
                     {isEditing ? (
-                        <form onSubmit={handleUpdate}>
-                            <label>
-                                Нэр:
+                        <form onSubmit={handleUpdate} className="space-y-4">
+                            <label className="block">
+                                <span className="block text-gray-700 font-medium">Нэр:</span>
                                 <input
                                     type="text"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                     required
+                                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
                             </label>
-                            <label>
-                                Үнэ:
+                            <label className="block">
+                                <span className="block text-gray-700 font-medium">Үнэ:</span>
                                 <input
                                     type="number"
                                     value={price}
                                     onChange={(e) => setPrice(e.target.value)}
                                     required
+                                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
                             </label>
-                            <button type="submit">Засах</button>
-                            <button type="button" onClick={() => setIsEditing(false)}>
-                                Болих
-                            </button>
+                            <div className="flex justify-end gap-4">
+                                <button
+                                    type="submit"
+                                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+                                >
+                                    Засах
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setIsEditing(false)}
+                                    className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition"
+                                >
+                                    Болих
+                                </button>
+                            </div>
                         </form>
                     ) : (
-                        <div>
-                            <button onClick={handleEditClick}>Засах</button>
-                            <button onClick={handleDelete}>Устгах</button>
+                        <div className="flex gap-4">
+                            <button
+                                onClick={handleEditClick}
+                                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+                            >
+                                Засах
+                            </button>
+                            <button
+                                onClick={handleDelete}
+                                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
+                            >
+                                Устгах
+                            </button>
                         </div>
                     )}
-                </div>
+                </>
             ) : (
-                <p>Loading...</p>
+                <p className="text-center text-gray-500">Loading...</p>
             )}
         </div>
     );
