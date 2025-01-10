@@ -10,13 +10,16 @@ const ProductSchema = new mongoose.Schema({
         type: Number,
         required: true,
         min: 0,
-        set: (v) => Number(v), // Ensure price is cast to a number
+        set: (v) => Number(v),
+    },
+    image: {
+        type: String, // URL of the image
+        required: true, // Set to true if every product must have an image
     },
     createdAt: {
         type: Date,
         default: Date.now,
     },
 });
-
 
 module.exports = mongoose.model("Product", ProductSchema);

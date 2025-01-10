@@ -8,6 +8,7 @@ const ProductDetail = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
+    const [image, setImage] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -18,6 +19,7 @@ const ProductDetail = () => {
                 setProduct(productData);
                 setName(productData.name);
                 setPrice(productData.price);
+                setImage(productData.image);
             } catch (error) {
                 console.error("Error fetching product:", error);
             }
@@ -31,7 +33,7 @@ const ProductDetail = () => {
     const handleUpdate = async (e) => {
         e.preventDefault();
         try {
-            const updatedProduct = { name, price };
+            const updatedProduct = { name, price, image };
             await axios.put(`http://localhost:5000/api/products/${id}`, updatedProduct);
             alert('Бараа амжилттай засагдлаа!');
             setIsEditing(false);
@@ -56,6 +58,11 @@ const ProductDetail = () => {
         <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md">
             {product ? (
                 <>
+                    <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-full h-40  object-contain rounded mb-4"
+                    />
                     <h1 className="text-2xl font-bold mb-4">{product.name}</h1>
                     <p className="text-gray-700 mb-4">
                         <span className="font-medium">Үнэ:</span> {product.price}₮
@@ -82,6 +89,16 @@ const ProductDetail = () => {
                                     type="number"
                                     value={price}
                                     onChange={(e) => setPrice(e.target.value)}
+                                    required
+                                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                />
+                            </label>
+                            <label className="block">
+                                <span className="block text-gray-700 font-medium">Зураг URL:</span>
+                                <input
+                                    type="text"
+                                    value={image}
+                                    onChange={(e) => setImage(e.target.value)}
                                     required
                                     className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
@@ -120,7 +137,7 @@ const ProductDetail = () => {
                     )}
                 </>
             ) : (
-                <p className="text-center text-gray-500">Loading...</p>
+                <p className="text-center text-gray-500">Алдаа...</p>
             )}
         </div>
     );

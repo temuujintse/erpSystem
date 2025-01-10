@@ -3,30 +3,26 @@ const Product = require("../models/Product");
 
 const updateProduct = async (req, res) => {
   try {
-    const { id } = req.params; // Extract product ID from route parameters
-    const { name, price } = req.body; // Extract updated fields from the request body
+      const { id } = req.params;
+      const { name, price, image } = req.body;
 
-    // Validate input
-    if (!name || price == null) {
-      return res.status(400).send({ message: "Name and price are required" });
-    }
+      if (!name || price == null || !image) {
+          return res.status(400).send({ message: "Name, price, and image are required" });
+      }
 
-    // Find and update the product
-    const updatedProduct = await Product.findByIdAndUpdate(
-      id,
-      { name, price },
-      { new: true, runValidators: true } // Return the updated document and validate input
-    );
+      const updatedProduct = await Product.findByIdAndUpdate(
+          id,
+          { name, price, image },
+          { new: true, runValidators: true }
+      );
 
-    if (!updatedProduct) {
-      // If no product is found, return a 404 status
-      return res.status(404).send({ message: "Product not found" });
-    }
+      if (!updatedProduct) {
+          return res.status(404).send({ message: "Product not found" });
+      }
 
-    res.status(200).json(updatedProduct); // Respond with the updated product details
+      res.status(200).json(updatedProduct);
   } catch (err) {
-    console.error("Error updating product:", err.message); // Log the error
-    res.status(500).send({ message: "Failed to update product", error: err.message });
+      res.status(500).send({ message: "Failed to update product", error: err.message });
   }
 };
 

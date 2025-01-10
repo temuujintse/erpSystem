@@ -3,16 +3,15 @@ const Product = require("../models/Product");
 
 const addProduct = async (req, res) => {
     try {
-        console.log("Request body:", req.body); // Debugging line
-        const { name, price } = req.body;
-        const newProduct = new Product({ name, price });
+        const { name, price, image } = req.body; // Include image URL
+        const newProduct = new Product({ name, price, image });
         await newProduct.save();
         res.status(201).send({ message: 'Product added successfully', product: newProduct });
     } catch (err) {
-        console.error("Error:", err.message); // Log error for debugging
         res.status(400).send({ message: 'Failed to add product', error: err.message });
     }
 };
+
 
 
 
