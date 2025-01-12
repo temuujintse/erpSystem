@@ -3,8 +3,8 @@ const Product = require("../models/Product");
 
 const addProduct = async (req, res) => {
     try {
-        const { name, price, image } = req.body; // Include image URL
-        const newProduct = new Product({ name, price, image });
+        const { name, price, image, unit } = req.body; // Include image URL
+        const newProduct = new Product({ name, price, image, unit });
         await newProduct.save();
         res.status(201).send({ message: 'Product added successfully', product: newProduct });
     } catch (err) {

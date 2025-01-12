@@ -9,6 +9,7 @@ const ProductDetail = () => {
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
     const [image, setImage] = useState('');
+    const [unit, setUnit] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -20,6 +21,7 @@ const ProductDetail = () => {
                 setName(productData.name);
                 setPrice(productData.price);
                 setImage(productData.image);
+                setUnit(productData.unit);
             } catch (error) {
                 console.error("Error fetching product:", error);
             }
@@ -33,7 +35,7 @@ const ProductDetail = () => {
     const handleUpdate = async (e) => {
         e.preventDefault();
         try {
-            const updatedProduct = { name, price, image };
+            const updatedProduct = { name, price, image, unit };
             await axios.put(`http://localhost:5000/api/products/${id}`, updatedProduct);
             alert('Бараа амжилттай засагдлаа!');
             setIsEditing(false);
@@ -66,6 +68,9 @@ const ProductDetail = () => {
                     <h1 className="text-2xl font-bold mb-4">{product.name}</h1>
                     <p className="text-gray-700 mb-4">
                         <span className="font-medium">Үнэ:</span> {product.price}₮
+                    </p>
+                    <p className="text-gray-700 mb-4">
+                        <span className="font-medium">Нэгж:</span> {product.unit}
                     </p>
                     <p className="text-gray-500 mb-6">
                         <span className="font-medium">Үүсгэсэн огноо:</span> {new Date(product.createdAt).toLocaleDateString()}
@@ -103,6 +108,20 @@ const ProductDetail = () => {
                                     className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
                             </label>
+                            <label className="block mb-4">
+                <span className="block text-gray-700 font-medium mb-2">Нэгж:</span>
+                <select
+                    value={unit}
+                    onChange={(e) => setUnit(e.target.value)}
+                    required
+                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                    <option value="Ширхэг">Ширхэг</option>
+                    <option value="Килограм">Килограм</option>
+                    <option value="Литер">Литер</option>
+                    <option value="Багц">Багц</option>
+                </select>
+            </label>
                             <div className="flex justify-end gap-4">
                                 <button
                                     type="submit"

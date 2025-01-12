@@ -4,15 +4,15 @@ const Product = require("../models/Product");
 const updateProduct = async (req, res) => {
   try {
       const { id } = req.params;
-      const { name, price, image } = req.body;
+      const { name, price, image, unit } = req.body;
 
-      if (!name || price == null || !image) {
-          return res.status(400).send({ message: "Name, price, and image are required" });
+      if (!name || price == null || !image || !unit) {
+          return res.status(400).send({ message: "Name, price, image and unit are required" });
       }
 
       const updatedProduct = await Product.findByIdAndUpdate(
           id,
-          { name, price, image },
+          { name, price, image, unit },
           { new: true, runValidators: true }
       );
 
